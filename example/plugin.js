@@ -1,6 +1,6 @@
-(function($, MITHGrid) {
-	MITHGrid.Plugin.namespace("StateMachineEditor");
-    MITHGrid.Plugin.StateMachineEditor.initPlugin = function(options) {
+(function($, MITHgrid) {
+	MITHgrid.Plugin.namespace("StateMachineEditor");
+    MITHgrid.Plugin.StateMachineEditor.initInstance = function(options) {
         var that,
 		types = $.extend({
             StateMachine: "StateMachine",
@@ -45,12 +45,12 @@
 			valueType: "item"
 		};
 
-        that = MITHGrid.Plugin.initPlugin("StateMachineEditor", {
+        that = MITHgrid.Plugin.initInstance("StateMachineEditor", {
 			types: typeOptions,
 			properties: propOptions,
             presentations: {
 				sheet: {
-	                type: MITHGrid.Presentation.Flow,
+	                type: MITHgrid.Presentation.Flow,
 	                container: options.container,
 	                label: 'sheet',
 	                options: {
@@ -62,4 +62,4 @@
 
         return that;
     };
-})(jQuery, MITHGrid);
+})(jQuery, MITHgrid);

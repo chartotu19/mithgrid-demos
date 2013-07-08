@@ -1,7 +1,7 @@
-(function($, MITHGrid) {
-	MITHGrid.Application.namespace("Example");
-	MITHGrid.Application.Example.initApp = function(container, options) {
-		var that = MITHGrid.Application.initApp("MITHGrid.Application.Example", container, {
+(function($, MITHgrid) {
+	MITHgrid.Application.namespace("Example");
+	MITHgrid.Application.Example.initApp = function(container, options) {
+		var that = MITHgrid.Application.initApp("MITHgrid.Application.Example", container, {
 	        dataStores: {
 				internal: {}
 			},
@@ -12,7 +12,7 @@
 	        	}
 			},
 			plugins: [{
-				type: MITHGrid.Plugin.StateMachineEditor,
+				type: MITHgrid.Plugin.StateMachineEditor,
 				dataView: 'internal',
 				types: {
 					StateMachine: 'Application',
@@ -73,5 +73,5 @@
 		return that;
 	};
 	
-//	MITHGrid.Application.Example().run();
-})(jQuery, MITHGrid);
+//	MITHgrid.Application.Example().run();
+})(jQuery, MITHgrid);

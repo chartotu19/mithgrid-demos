@@ -1,8 +1,8 @@
-(function($, MITHGrid) {
-	MITHGrid.Controller.namespace("State");
+(function($, MITHgrid) {
+	MITHgrid.Controller.namespace("State");
 	
-	MITHGrid.Controller.State.initController = function(options) {
-		var that = MITHGrid.Controller.initRaphaelController("MITHGrid.Controller.State", options),
+	MITHgrid.Controller.State.initController = function(options) {
+		var that = MITHgrid.Controller.initRaphaelController("MITHgrid.Controller.State", options),
 		options = that.options;
 		
 		that.applyBindings = function(binding, model, itemId) {
@@ -33,10 +33,10 @@
 		return that;
 	};
 	
-	MITHGrid.Presentation.namespace("Flow");
-	MITHGrid.Presentation.Flow.initPresentation = function(klass, container, options) {
+	MITHgrid.Presentation.namespace("Flow");
+	MITHgrid.Presentation.Flow.initPresentation = function(klass, container, options) {
 		var that, _ref1, klass;
-		_ref1 = MITHGrid.normalizeArgs("MITHGrid.Presentation.Flow", klass, container, options);
+		_ref1 = MITHgrid.normalizeArgs("MITHgrid.Presentation.Flow", klass, container, options);
 		klass = _ref1[0]; container = _ref1[1]; options = _ref1[2];
 		var _floor_0 = function(x) {
 			return (x < 0 ? 0: x);
@@ -69,7 +69,7 @@
 			);
 		}
 
-		var viewController = MITHGrid.Controller.State.initController({
+		var viewController = MITHgrid.Controller.State.initController({
 			selectors: {
 				svg: ''
 			}
@@ -286,7 +286,7 @@
 			return false;
 		};
 */
-		that = MITHGrid.Presentation.initPresentation(klass, container, $.extend(true, {
+		that = MITHgrid.Presentation.initPresentation(klass, container, $.extend(true, {
 			lenses: lenses
 		}, options));
 		
@@ -332,4 +332,4 @@
 
 		return that;
 	};
-})(jQuery, MITHGrid);
+})(jQuery, MITHgrid);
