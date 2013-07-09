@@ -1,15 +1,7 @@
 <html> 
     <head> 
 	  <title>Adventure</title> 
-<script src="../lib/jquery.js" type="text/javascript"></script> 
-<script src="../dist/mithgrid.js" type="text/javascript"></script>
-<script src="game.js" type="text/javascript"></script>
-<script type="text/javascript">
-$(document).ready(function() {
-    var game = MITHGrid.Application.Adventure.initInstance("#game", {});
-    game.run();
-});
-</script>
+
 <link rel="stylesheet" href="game.css" type="text/css" /> 
     </head> 
     <body> 
@@ -33,5 +25,14 @@ $(document).ready(function() {
 		<span id="number-objects">0</span> objects
 		in the game database.
 	</p>
+	<script src="../lib/jquery.js" type="text/javascript"></script> 
+<script src="../dist/mithgrid.js" type="text/javascript"></script>
+<script src="game.js" type="text/javascript"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    // var game = MITHgrid.Application.Adventure.initInstance("#game", {});
+    // game.run();
+});
+</script>
     </body> 
   </html>

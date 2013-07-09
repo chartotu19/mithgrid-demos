@@ -7,15 +7,15 @@
 # data store.
 #
 
-(($, MITHGrid) ->
+(($, MITHgrid) ->
 
 	#
 	# This is the main application configuration, providing information about the game database, the
 	# various filtered data views, and the DOM content inside the container.
 	#
-	MITHGrid.Application.namespace "AdventureEngine", (exports) ->
+	MITHgrid.Application.namespace "AdventureEngine", (exports) ->
 		exports.initInstance = (args...) ->
-			MITHGrid.Application.initInstance "MITHGrid.Application.AdventureEngine", args..., (that, container) ->
+			MITHgrid.Application.initInstance "MITHgrid.Application.AdventureEngine", args..., (that, container) ->
 				options = that.options
 				
 				# the initApp call sets up the basic data sources, views, and presentations we want to use
@@ -800,9 +800,9 @@
 						$(selector.cli).focus()
 					superRun()
 		
-	MITHGrid.Application.namespace "Adventure", (exports) ->
+	MITHgrid.Application.namespace "Adventure", (exports) ->
 		exports.initInstance = (args...) ->
-			MITHGrid.Application.AdventureEngine.initInstance "MITHGrid.Application.Adventure", args..., (that, container) ->
+			MITHgrid.Application.AdventureEngine.initInstance "MITHgrid.Application.Adventure", args..., (that, container) ->
 				options = that.options
 
 				that.ready () ->
@@ -2205,7 +2205,7 @@
 	# done with game data now
 	#
 
-	MITHGrid.defaults "MITHGrid.Application.AdventureEngine",
+	MITHgrid.defaults "MITHgrid.Application.AdventureEngine",
 		variables:
 			WasDark:
 				"default": false
@@ -2259,15 +2259,15 @@
 				types: ["Player"]
 		presentations:
 			inventory:
-				type: MITHGrid.Presentation.SimpleText
+				type: MITHgrid.Presentation.SimpleText
 				container: ".inventory"
 				dataView: 'inventory'
 			score:
-				type: MITHGrid.Presentation.SimpleText
+				type: MITHgrid.Presentation.SimpleText
 				container: ".score"
 				dataView: 'player'
 			room:
-				type: MITHGrid.Presentation.SimpleText
+				type: MITHgrid.Presentation.SimpleText
 				container: ".description"
 				dataView: 'player'
 		
@@ -2301,4 +2301,4 @@
 				<input class='cli-input' type='text' name='command'></input>
 			</div>
 			"""
-)(jQuery, MITHGrid)
+)(jQuery, MITHgrid)
