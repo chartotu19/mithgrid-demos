@@ -28,7 +28,6 @@ drive = ($,container)->
 		fileId = fileId || $("#fileId").val()
 		request = gapi.client.drive.files.get(fileId: fileId)
 		request.execute (resp) ->
-			console.log resp
 	    	console.log "Title: " + resp.title
 	    	console.log "Description: " + resp.description
 	    	console.log "MIME type: " + resp.mimeType
