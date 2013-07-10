@@ -3,7 +3,6 @@
   "description": "A simple grid visualization using MITHgrid supporting google drive API",
   "version": "0.1.0",
   "dependencies": {
-    "jQuery": "1.8.2"
   },
   "devDependencies": {
     "coffee-script": "latest",
