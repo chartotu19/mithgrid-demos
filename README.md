@@ -1,47 +1,28 @@
-MITHgrid
-========
+## MITHgrid Demos
 
-MITHgrid is a JavaScript framework for building data-oriented, event-driven browser applications..
+These demos explains the flow and construct of the library. 
 
-What you need to use MITHgrid
------------------------------
+### Developer Setup
 
-MITHgrid depends on jQuery.  
+The following tools are used to improve the efficiency while development. Every demo is a separate application hence you will have to navigate to the concerned folder and then perform the following installations. For example, If you want to develop for the grid demo, enter the grid/ folder and then install.
 
-The following libraries and versions are included in the lib/ directory.  These are the versions with which MITHgrid is developed.
+#### Installation
+The package.json has all the details about the application. The following command will install all the dependencies.
 
-* jQuery 1.7.1
+	npm install
+		
+Please contact selvam1991@gmail.com if there is difficulty while the setup.
 
-What you need to build your own MITHgrid
-----------------------------------------
+#### Build using GruntJs
 
-In order to build MITHgrid, you need to have GNU make 3.81 or later, CoffeeScript 1.1.1 or later, Node.js 0.5 or later, and git 1.7 or later.  Earlier versions might work, but they have not been tested.
+Every application (in our case demo folder) will have a GruntFile.coffee. It contains all the tasks that needs to be performed. To build(i.e. compile,concat,minify) the code, run this on your terminal:
 
-Mac OS users should install Xcode, either from the Mac OS install DVD or from the Apple Mac OS App Store.  Node.js can be installed by one of the UNIX package managers available for the Mac OS.
+	grunt build
 
-Linux/BSD users should use their appropriate package managers to install make, git, and node.
 
-How to build your own MITHgrid
-------------------------------
 
-First, clone a copy of the MITHgrid git repo by running `git clone git://github.com/umd_mith/mithgrid.git`.
+#### NodeJs
+Please update your node installation. v0.10.12 is used while development.
 
-Then, to get a complete, minified, jslinted version of MITHgrid, simple `cd` to the `mithgrid` directory and type `make`.  If you don't have Node installed and/or want to make a basic, uncompressed, unlinted version of MITHgrid, use `make mithgrid` instead of `make`.
 
-The built version of MITHgrid will be in the `dist/` subdirectory.
 
-To remove all built files, run `make clean`.
-
-How to test MITHgrid
---------------------
-
-Once you have built MITHgrid, you can browse to the `test/` subdirectory 
-and view the `*.html` files.  These files load the minified version 
-of MITHgrid by default.
-
-The test scripts have been tested against PhantomJS 1.9 and grunt 0.3.17.
-
-License
--------
-
-MITHgrid is licensed under the [3-clause BSD license](http://opensource.org/licenses/BSD-3-Clause) because large parts of the data management code are based on the SIMILE Exhibit project, which is licensed under the 3-clause BSD license.
