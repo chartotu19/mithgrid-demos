@@ -1,0 +1,56 @@
+{
+	"entries":
+		[
+			{
+			  "id": "csv1",
+			  "type": "number",
+			  "columns": ["userName", "userAge", "score"],
+			  "userName": "Linda",
+			  "userAge": 21,
+			  "math": 92,
+			  "science":78
+			},
+			{
+			  "id": "csv2",
+			  "type": "number",
+			  "columns": ["userName", "userAge", "score"],
+			  "userName": "Selvam",
+			  "userAge": 21,
+			  "math":65,
+			  "science": 92
+			},{
+			  "id": "csv3",
+			  "type": "number",
+			  "columns": ["userName", "userAge", "score"],
+			  "userName": "Helen",
+			  "userAge": 21,
+			  "math": 90,
+			  "science":85
+			},
+			{
+			  "id": "csv4",
+			  "type": "number",
+			  "columns": ["userName", "userAge", "score"],
+			  "userName": "Andrew",
+			  "userAge": 22,
+			  "math": 60,
+			  "science":45
+			},{
+			  "id": "csv5",
+			  "type": "number",
+			  "columns": ["userName", "userAge", "score"],
+			  "userName": "Aman",
+			  "userAge": 20,
+			  "math": 95,
+			  "science":92
+			},{
+			  "id": "csv6",
+			  "type": "number",
+			  "columns": ["userName", "userAge", "score"],
+			  "userName": "Karim",
+			  "userAge": 23,
+			  "math": 74,
+			  "science":88
+			}
+		]
+}
