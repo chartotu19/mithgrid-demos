@@ -1,0 +1,37 @@
+body{
+	padding-top: 60px;
+	font-family: 'Exo', sans-serif;
+	/*font-family: 'Wire One', sans-serif;*/
+	/*font-family: 'Roboto Slab', serif;*/
+}
+
+/*Input method lists*/
+.list{
+	list-style: none;
+
+}
+
+.list > li {
+	margin: 10px;
+}
+.list >li>button{
+	padding: 15px;
+}
+
+.container{
+	border-right:1px solid;
+}
+
+/* Style for table body*/
+.opTable > table > tbody > tr > td {
+	background-color: #cdf;
+	padding: 10px ;
+	border:1px solid #eee;
+}
+
+/* Style for table header*/
+.opTable > table > tbody > tr > th{
+	padding: 10px;
+	border:1px solid #ccc;
+
+}
