@@ -7,16 +7,29 @@
       args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
       return (_ref = MITHgrid.Application).initInstance.apply(_ref, ["MITHgrid.Application.gridDemo"].concat(__slice.call(args), [function(that, container) {
         return that.ready(function() {
-          var test;
+          var opTable, test;
+          opTable = MITHgrid.Presentation.Table.initInstance('.opTable', {
+            columns: ["userName", "userAge", "score"],
+            columnLabels: {
+              userName: "User",
+              userAge: "Age",
+              score: "Score"
+            },
+            dataView: that.dataView.csvData
+          });
+          that.dataStore.csv.events.onModelChange.addListener(function() {
+            return console.log("model updated");
+          });
           test = {
             id: "csv1",
             type: "number",
-            columns: [1, 2, 3],
-            columnLabels: ["name", "age", "score"]
+            columns: ["userName", "userAge", "score"],
+            userName: "Foo",
+            userAge: 21,
+            score: 99
           };
           that.dataStore.csv.loadItems([test]);
-          window["test"] = that;
-          return console.log(that.dataView.csvData.items());
+          return window["test"] = that;
         });
       }]));
     };
@@ -33,12 +46,7 @@
     dataViews: {
       csvData: {
         dataStore: "csv",
-        type: ["number"],
-        events: {
-          onModelChange: function(e) {
-            return console.log("CHANGE");
-          }
-        }
+        type: ["number"]
       }
     },
     presentations: {

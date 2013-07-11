@@ -9476,7 +9476,7 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
 /*
 # mithgrid JavaScript Library v0.131910
 #
-# Date: Tue Jul 9 15:10:43 2013 +0530
+# Date: Wed Jul 10 21:29:49 2013 +0530
 #
 # (c) Copyright University of Maryland 2011-2013.  All rights reserved.
 #
@@ -13620,16 +13620,29 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
       args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
       return (_ref = MITHgrid.Application).initInstance.apply(_ref, ["MITHgrid.Application.gridDemo"].concat(__slice.call(args), [function(that, container) {
         return that.ready(function() {
-          var test;
+          var opTable, test;
+          opTable = MITHgrid.Presentation.Table.initInstance('.opTable', {
+            columns: ["userName", "userAge", "score"],
+            columnLabels: {
+              userName: "User",
+              userAge: "Age",
+              score: "Score"
+            },
+            dataView: that.dataView.csvData
+          });
+          that.dataStore.csv.events.onModelChange.addListener(function() {
+            return console.log("model updated");
+          });
           test = {
             id: "csv1",
             type: "number",
-            columns: [1, 2, 3],
-            columnLabels: ["name", "age", "score"]
+            columns: ["userName", "userAge", "score"],
+            userName: "Foo",
+            userAge: 21,
+            score: 99
           };
           that.dataStore.csv.loadItems([test]);
-          window["test"] = that;
-          return console.log(that.dataView.csvData.items());
+          return window["test"] = that;
         });
       }]));
     };
@@ -13646,12 +13659,7 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
     dataViews: {
       csvData: {
         dataStore: "csv",
-        type: ["number"],
-        events: {
-          onModelChange: function(e) {
-            return console.log("CHANGE");
-          }
-        }
+        type: ["number"]
       }
     },
     presentations: {

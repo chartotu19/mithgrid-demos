@@ -10,24 +10,36 @@ MITHgrid.Application.namespace "gridDemo", (exp)->
 			that.ready ->
 				
 				#App is initialised
+
+				#Presentation initialization
+				opTable = MITHgrid.Presentation.Table.initInstance('.opTable',
+					columns: ["userName","userAge","score"]
+					columnLabels:
+						userName:"User"
+						userAge:"Age"
+						score:"Score"
+				
+					dataView:that.dataView.csvData
+				)
+				
+				# Add listener to csv datastore update
+				that.dataStore.csv.events.onModelChange.addListener ->
+					console.log "model updated"
+				
 				#Load some test data into the dataStore.
 				#The Table view should dynamically change.
 				test = 
 					id:"csv1"
 					type:"number"
-					columns:[1,2,3]
-					columnLabels:["name","age","score"]
+					columns:["userName","userAge","score"]
+					userName:"Foo"
+					userAge:21
+					score:99
 				#lets put some data into the store.
 				that.dataStore.csv.loadItems [test]
 				
 				#hook to play around in the console.	
 				window["test"] = that 
-
-				#lets try to render the view manually.
-				#that.presentation.opTable.render('.opTable',that.dataView.csvData,'csv1')
-
-				console.log that.dataView.csvData.items()
-				
 
 				#create bindings 
 
