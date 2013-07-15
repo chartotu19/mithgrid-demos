@@ -19,27 +19,29 @@
       args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
       return (_ref = MITHgrid.Application).initInstance.apply(_ref, ["MITHgrid.Application.gridDemo"].concat(__slice.call(args), [function(that, container) {
         return that.ready(function() {
-          var binding, opTable, test;
+          var binding, opTable;
           opTable = MITHgrid.Presentation.Table.initInstance('.opTable', {
-            columns: ["userName", "userAge", "math", "science"],
+            columns: ["name", "age", "math", "science"],
             columnLabels: {
-              userName: "First Name",
-              userAge: "Age",
+              name: "First Name",
+              age: "Age",
               math: "Mathematics",
               science: "Science"
             },
             dataView: that.dataView.csvData
           });
+          MITHgrid.Presentation.Graph.initInstance(".plot", {
+            dataView: that.dataView.csvData
+          });
+          exp = that.dataStore.csv.prepare(["!userName"]);
           that.dataStore.csv.events.onModelChange.addListener(function() {
             return console.log("model updated");
           });
-          test = that.dataStore.csv.loadItems([test]);
           window["test"] = that;
           binding = MITHgrid.Click.initInstance({}).bind("#defUpload");
           return binding.events.onSelect.addListener(function() {
             var cb;
             cb = function(data) {
-              console.log("success");
               if (data != null) {
                 return that.dataStore.csv.loadItems(data.entries);
               }
@@ -59,23 +61,20 @@
     dataStores: {
       csv: {
         types: {
-          number: {}
+          student: {},
+          record: {}
+        },
+        properties: {
+          "name": {
+            valueType: "item"
+          }
         }
       }
     },
     dataViews: {
       csvData: {
         dataStore: "csv",
-        type: ["number"]
-      }
-    },
-    presentations: {
-      opTable: {
-        type: MITHgrid.Presentation.Table,
-        container: ".opTable",
-        dataView: "csvData",
-        columns: [1, 2, 3, 4],
-        columnLabels: ["name", "age", "math", "science"]
+        type: ["record", "student"]
       }
     }
   });
