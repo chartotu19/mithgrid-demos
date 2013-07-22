@@ -15,7 +15,7 @@ module.exports = (grunt)->
 				banner: '/*! <%= pkg.name %> - v<%= pkg.version %> */'
         	
    dist:
-        		src:['components/nvd3/lib/d3.v2.js','components/nvd3/nv.d3.min.js','components/jquery/jquery.js','../../dist/mithgrid.js','src/graph.js','src/app.js','src/drive.js','components/bootstrap/docs/assets/js/bootstrap.js']
+        		src:['components/nvd3/lib/d3.v2.js','components/nvd3/nv.d3.min.js','components/jquery/jquery.js','components/bootstrap/docs/assets/js/bootstrap.js','../../dist/mithgrid.js','src/graph.js','src/app.js','src/drive.js']
         		dest: 'src/<%= pkg.name %>.js'
 
 		uglify:
