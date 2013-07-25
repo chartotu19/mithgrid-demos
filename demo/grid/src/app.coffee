@@ -38,6 +38,8 @@ MITHgrid.Application.namespace "gridDemo", (exp)->
 
 				MITHgrid.Presentation.Graph.initInstance(".plot", 
 					dataView:that.dataView.csvData
+					defaultxAxis:"math"
+					defaultyAxis:"science"
 				)
 				# that.presentation.stats.addLens "number", (c,v,m,i)->
 				# 	rendering = {}
@@ -111,6 +113,7 @@ MITHgrid.defaults "MITHgrid.Application.gridDemo",
 	# 	Avg:
 	# 		"default":0
 	# 		is:"rw"
+
 	dataStores:
 		csv:
 			types:

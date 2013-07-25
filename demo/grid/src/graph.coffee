@@ -6,15 +6,35 @@ MITHgrid.Presentation.namespace "Graph" , (Graph)->
 
 			options = that.options
 
+			model = that.dataView
+
+			#Setting the default x-axis and y-axis values provided at initInstance 
+			that.setxAxis(options.defaultxAxis)
+			that.setyAxis(options.defaultyAxis)
+
+			#creating control panel
+			$(container).append("<div></div>")
+			controls = $(container).find("div")
+			
+			#create svg
+			$(container).append("<svg></svg>")
+
 			# Not sure 
 			that.hasLensFor = -> true
+
+			# #listeners
+			that.events.onxAxisChange.addListener ->
+				that.drawPlot()
+
+			that.events.onyAxisChange.addListener ->
+				that.drawPlot()
 
 			# creates the list of variables to be plotted
 			pickup = ->
 				excludeList = ["id","type","name"]
 				includeList = []
 				ids = that.dataView.items()
-				#pick up the first id
+				#pick up the first id [Hack]
 				if ids[0]?
 					res = that.dataView.getItem(ids[0])
 				if res?
@@ -26,52 +46,44 @@ MITHgrid.Presentation.namespace "Graph" , (Graph)->
 						i++
 				includeList
 
-			updateControls = (controls)->
+			updateControls = ()->
 				controls.empty()
 				#check if x is available
 				if not options.x?
 					# need to pick the whole list from the dataView
-					pickup()
 					options.x = pickup().slice(0)
 
 				if not options.y?
 					# need to pick the whole list from the dataView
-					
 					options.y = pickup().slice(0)
 
 				i = 0
-				cel = $("<select class='x'></select>")
+				celx = $("<select class='x'></select>")
 				while i < options.x.length
-					$(cel).append("<option value='"+options.x[i]+"'>"+options.x[i]+"</option>")
+					$(celx).append("<option value='"+options.x[i]+"'>"+options.x[i]+"</option>")
 					i++
 				$(controls).append "<p>X-Axis :</p>"
-				$(controls).append cel
+				$(controls).append celx
 
 				i = 0
-				cel = $("<select class='y'></select>")
+				cely = $("<select class='y'></select>")
 				while i < options.y.length
-					$(cel).append("<option value='"+options.y[i]+"'>"+options.y[i]+"</option>")
+					$(cely).append("<option value='"+options.y[i]+"'>"+options.y[i]+"</option>")
 					i++
 				$(controls).append "<p>Y-Axis :</p>"
-				$(controls).append cel
-				button = $("<button class='btn'> Update </button>").click ->
-					#pick up the variables
-					xvar = $(container).find('div').find('.x').val()
-					yvar = $(container).find('div').find('.y').val()
-					that.updateSVG container, that.dataView,
-						xvar:xvar
-						yvar:yvar
-				$(controls).append button
+				$(controls).append cely
 
+				celx.on "change", ->
+					that.setxAxis $(this).val()
 
-			that.updateSVG = (container,model,options)->
-				console.log "graph render called"
-				if not options?
-					options = 
-						xvar: "math"
-						yvar: "science"
-				xvar = options.xvar
-				yvar = options.yvar
+				cely.on "change", ->
+					that.setyAxis $(this).val()
+
+			updateSVG = (options)->
+				#options is not used till now.
+				options ?= {}
+				xvar = that.getxAxis()
+				yvar =  that.getyAxis()
 				#clean the svg
 				d3.select(container).select("svg").remove()
 				#svg specs
@@ -146,21 +158,14 @@ MITHgrid.Presentation.namespace "Graph" , (Graph)->
 				dots.on("mouseout", mouseOff)
 
 
+			that.drawPlot = (options)->
+				updateSVG(options)
+				# updateControls()
 
-			#controls
-			$(container).append("<div></div>")
-			that.controls = $(container).find("div")
-			#create svg
-			$(container).append("<svg></svg>")
-
-
-			console.log "Graph initInstance"
 			that.render=(container,model,id)->
 				rendering = {}
-				
-				that.updateSVG(container,model)
-
-				updateControls(that.controls)
+				updateControls()
+				that.drawPlot()
 
 				rendering.update = (item)->
 					console.log "render.update called"
@@ -170,4 +175,14 @@ MITHgrid.Presentation.namespace "Graph" , (Graph)->
 
 				#return
 				rendering
+				
+MITHgrid.defaults "MITHgrid.Presentation.Graph", 
+	variables:
+		xAxis:
+			"default":null
+			"is":"rw"
+		yAxis:
+			"default":null
+			"is":"rw"
+
 
