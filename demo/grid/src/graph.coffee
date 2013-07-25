@@ -9,13 +9,69 @@ MITHgrid.Presentation.namespace "Graph" , (Graph)->
 			# Not sure 
 			that.hasLensFor = -> true
 
-			#create svg
-			$(container).append("<svg></svg>")
+			# creates the list of variables to be plotted
+			pickup = ->
+				excludeList = ["id","type","name"]
+				includeList = []
+				ids = that.dataView.items()
+				#pick up the first id
+				if ids[0]?
+					res = that.dataView.getItem(ids[0])
+				if res?
+					entries = Object.keys(res)
+					i = 0
+					while i < entries.length
+						if excludeList.indexOf(entries[i]) is -1
+							includeList.push entries[i]
+						i++
+				includeList
 
-			console.log "Graph initInstance"
-			that.render=(container,model,id)->
-				rendering = {}
+			updateControls = (controls)->
+				controls.empty()
+				#check if x is available
+				if not options.x?
+					# need to pick the whole list from the dataView
+					pickup()
+					options.x = pickup().slice(0)
+
+				if not options.y?
+					# need to pick the whole list from the dataView
+					
+					options.y = pickup().slice(0)
+
+				i = 0
+				cel = $("<select class='x'></select>")
+				while i < options.x.length
+					$(cel).append("<option value='"+options.x[i]+"'>"+options.x[i]+"</option>")
+					i++
+				$(controls).append "<p>X-Axis :</p>"
+				$(controls).append cel
+
+				i = 0
+				cel = $("<select class='y'></select>")
+				while i < options.y.length
+					$(cel).append("<option value='"+options.y[i]+"'>"+options.y[i]+"</option>")
+					i++
+				$(controls).append "<p>Y-Axis :</p>"
+				$(controls).append cel
+				button = $("<button class='btn'> Update </button>").click ->
+					#pick up the variables
+					xvar = $(container).find('div').find('.x').val()
+					yvar = $(container).find('div').find('.y').val()
+					that.updateSVG container, that.dataView,
+						xvar:xvar
+						yvar:yvar
+				$(controls).append button
+
+
+			that.updateSVG = (container,model,options)->
 				console.log "graph render called"
+				if not options?
+					options = 
+						xvar: "math"
+						yvar: "science"
+				xvar = options.xvar
+				yvar = options.yvar
 				#clean the svg
 				d3.select(container).select("svg").remove()
 				#svg specs
@@ -40,23 +96,23 @@ MITHgrid.Presentation.namespace "Graph" , (Graph)->
 				data = []
 				while i < items.length
 					d = {}
-					d.science = model.getItem(items[i]).science
-					d.math = model.getItem(items[i]).math
+					d[xvar] = model.getItem(items[i])[xvar]
+					d[yvar]= model.getItem(items[i])[yvar]
 					d.name = model.getItem(items[i]).name
 					data.push d
 					i++
 				x.domain(d3.extent(data, (d) ->
-					d.science
+					d[xvar]
 				)).nice()
 				y.domain(d3.extent(data, (d) ->
-					d.math
+					d[yvar]
 				)).nice()
-				svg.append("g").attr("class", "x axis").attr("transform", "translate(0," + height + ")").call(xAxis).append("text").attr("class", "label").attr("x", width).attr("y", -6).style("text-anchor", "end").text "science"
-				svg.append("g").attr("class", "y axis").call(yAxis).append("text").attr("class", "label").attr("transform", "rotate(-90)").attr("y", 6).attr("dy", ".71em").style("text-anchor", "end").text "Math"
+				svg.append("g").attr("class", "x axis").attr("transform", "translate(0," + height + ")").call(xAxis).append("text").attr("class", "label").attr("x", width).attr("y", -6).style("text-anchor", "end").text xvar
+				svg.append("g").attr("class", "y axis").call(yAxis).append("text").attr("class", "label").attr("transform", "rotate(-90)").attr("y", 6).attr("dy", ".71em").style("text-anchor", "end").text yvar
 				svg.selectAll(".dot").data(data).enter().append("circle").attr("class", "dot").attr("r", 6).style("opacity", 0.5).attr("cx", (d) ->
-					x d.science
+					x d[xvar]
 				).attr("cy", (d) ->
-					y d.math
+					y d[yvar]
 				).style "fill", (d) ->
 					color d.name
 
@@ -88,6 +144,23 @@ MITHgrid.Presentation.namespace "Graph" , (Graph)->
 				# Bind mouse events 
 				dots.on("mouseover", mouseOn)
 				dots.on("mouseout", mouseOff)
+
+
+
+			#controls
+			$(container).append("<div></div>")
+			that.controls = $(container).find("div")
+			#create svg
+			$(container).append("<svg></svg>")
+
+
+			console.log "Graph initInstance"
+			that.render=(container,model,id)->
+				rendering = {}
+				
+				that.updateSVG(container,model)
+
+				updateControls(that.controls)
 
 				rendering.update = (item)->
 					console.log "render.update called"
