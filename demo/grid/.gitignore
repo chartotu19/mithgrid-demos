@@ -2,4 +2,4 @@ components
 npm-debug.log
 node_modules
 build
-
+src/*.js
