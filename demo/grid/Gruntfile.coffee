@@ -9,13 +9,24 @@ module.exports = (grunt)->
 					"src/app.js" : "src/app.coffee"
 					"src/drive.js":"src/drive.coffee"
 					"src/graph.js":"src/graph.coffee"
+					"src/importer.js":"src/importer.coffee"
 		concat:
 			options:
 				stripBanners : true
 				banner: '/*! <%= pkg.name %> - v<%= pkg.version %> */'
         	
    dist:
-        		src:['components/nvd3/lib/d3.v2.js','components/nvd3/nv.d3.min.js','components/jquery/jquery.js','components/bootstrap/docs/assets/js/bootstrap.js','../../dist/mithgrid.js','src/graph.js','src/app.js','src/drive.js']
+        		src:['components/nvd3/lib/d3.v2.js',
+        			'components/nvd3/nv.d3.min.js',
+        			'components/jquery/jquery.js',
+        			'components/jquery-csv/src/jquery.csv.js'
+        			'components/bootstrap/docs/assets/js/bootstrap.js',
+        			'../../dist/mithgrid.js',
+        			'src/graph.js',
+        			'src/app.js',
+        			'src/drive.js',
+        			'src/importer.js'
+        		]
         		dest: 'src/<%= pkg.name %>.js'
 
 		uglify:
