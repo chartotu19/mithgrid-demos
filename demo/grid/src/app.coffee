@@ -55,21 +55,21 @@ MITHgrid.Application.namespace "gridDemo", (exp)->
 				exp = that.dataStore.csv.prepare ["!userName"]
 				# Add listener to csv datastore update
 
-				# calculateAvg = ->
-				# 	items = that.dataStore.csv.items()
-				# 	m = []
-				# 	i = 0
-				# 	while i < items.length
-				# 		m.push that.dataStore.csv.getItem(items[i]).math[0]
-				# 		i++
-				# 	console.log m
-				# 	t = 0
-				# 	i = 0
-				# 	while i < m.length
-				# 		t = t + m[i]
-				# 		i++
-				# 	console.log t
-				# 	t/m.length
+				template = 
+					type: "president"
+					separator: "  "
+					"id" : 0
+					"year" : 1
+					"pop_vote_percentage" : 2
+					"pop_vote_advantage" : 3
+					"elec_vote_percentage" : 4
+					"elec_vote_advantage" : 5
+					"difference" : 6
+
+
+				importer = MITHgrid.Data.Importer.CSV.initInstance that.dataStore, template
+
+
 					
 				that.dataStore.csv.events.onModelChange.addListener ->
 					console.log "model updated"
@@ -98,7 +98,23 @@ MITHgrid.Application.namespace "gridDemo", (exp)->
 
 					#make ajax call.
 					$.ajax( 
-						url:"data.json"
+						url:"data/test.json"
+						type:"get"
+						success:cb
+					)
+
+				MITHgrid.Click.initInstance({}).bind("#csvUpload").events.onSelect.addListener ->
+					#Upload the default data.
+					#define callback.
+					cb = (data)->
+						#check for format
+						if data?
+							importer.import data, ->
+								console.log "success"
+
+					#make ajax call.
+					$.ajax( 
+						url:"data/test.csv"
 						type:"get"
 						success:cb
 					)

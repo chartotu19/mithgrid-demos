@@ -163,6 +163,7 @@ MITHgrid.Presentation.namespace "Graph" , (Graph)->
 				# updateControls()
 
 			that.render=(container,model,id)->
+				console.log "graph render called"
 				rendering = {}
 				updateControls()
 				that.drawPlot()
@@ -171,7 +172,8 @@ MITHgrid.Presentation.namespace "Graph" , (Graph)->
 					console.log "render.update called"
 
 				rendering.remove = ->
-					$(container).remove()
+					#$(container).remove()
+					that.drawPlot()
 
 				#return
 				rendering
