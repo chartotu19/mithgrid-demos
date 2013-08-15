@@ -110,7 +110,7 @@ MITHgrid.Presentation.namespace "Graph" , (Graph)->
 					d = {}
 					d[xvar] = model.getItem(items[i])[xvar]
 					d[yvar]= model.getItem(items[i])[yvar]
-					d.name = model.getItem(items[i]).name
+					d.name = model.getItem(items[i]).name || model.getItem(items[i]).id 
 					data.push d
 					i++
 				x.domain(d3.extent(data, (d) ->

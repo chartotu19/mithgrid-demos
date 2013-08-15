@@ -23,14 +23,14 @@ body{
 }
 
 /* Style for table body*/
-.opTable > table > tbody > tr > td {
+.jsonTable > table > tbody > tr > td, .csvTable > table > tbody > tr > td {
 	background-color: #cdf;
 	padding: 10px ;
 	border:1px solid #eee;
 }
 
 /* Style for table header*/
-.opTable > table > tbody > tr > th{
+.jsonTable > table > tbody > tr > th , .csvTable > table > tbody > tr > th{
 	padding: 10px;
 	border:1px solid #ccc;
 

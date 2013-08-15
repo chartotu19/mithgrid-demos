@@ -18,28 +18,62 @@ MITHgrid.Application.namespace "gridDemo", (exp)->
 			# sets up the app
 			that.ready ->
 				
-				#App is initialised
+				#App initialised.
 
-				#Presentation initialization
-				opTable = MITHgrid.Presentation.Table.initInstance('.opTable',
+				#Presentation initialization.
+
+				# Table presentation to show the data from JSON.
+				MITHgrid.Presentation.Table.initInstance('.jsonTable',
 					columns: ["name","age","math","science"]
 					columnLabels:
 						name:"First Name"
 						age:"Age"
 						math:"Mathematics"
 						science:"Science"
-				
-					dataView:that.dataView.csvData
+					dataView:that.dataView.jsonData
 				)
 
+				# hide it initially. Onclick show.
+				$(".jsonTable").hide()
+
+				
+				MITHgrid.Presentation.Spreadsheet.initInstance('.csvTable',
+					dataView:that.dataView.csvData
+					colHeaders: ["Name","Year","Popular Vote %","Popular vote Advantage",
+						"Electoral vote Advantage",
+						"Difference"
+					]
+					columnSorting:true
+					columns:[
+							data:"id"
+						,
+							data:"year"
+						,
+							data:"pop_vote_percentage"
+						,	
+							data:"pop_vote_advantage"
+						,
+							data:"elec_vote_advantage"
+						,
+							data:"difference"
+					]
+				)
+				$(".csvTable").hide()
+				
 				# stats = MITHgrid.Presentation.SimpleText.initInstance('.stats',
 				# 	dataView:that.dataView.csvData
 				# )
 
-				MITHgrid.Presentation.Graph.initInstance(".plot", 
-					dataView:that.dataView.csvData
+				MITHgrid.Presentation.Graph.initInstance(".jsonPlot", 
+					dataView:that.dataView.jsonData
 					defaultxAxis:"math"
 					defaultyAxis:"science"
+				)
+
+				MITHgrid.Presentation.Graph.initInstance(".csvPlot", 
+					dataView:that.dataView.csvData
+					defaultxAxis:"pop_vote_percentage"
+					defaultyAxis:"elec_vote_advantage"
 				)
 				# that.presentation.stats.addLens "number", (c,v,m,i)->
 				# 	rendering = {}
@@ -58,19 +92,18 @@ MITHgrid.Application.namespace "gridDemo", (exp)->
 				template = 
 					type: "president"
 					separator: "  "
-					"id" : 0
-					"year" : 1
-					"pop_vote_percentage" : 2
-					"pop_vote_advantage" : 3
-					"elec_vote_percentage" : 4
-					"elec_vote_advantage" : 5
-					"difference" : 6
+					columns:
+						"id" : 0
+						"year" : 1
+						"pop_vote_percentage" : 2
+						"pop_vote_advantage" : 3
+						"elec_vote_percentage" : 4
+						"elec_vote_advantage" : 5
+						"difference" : 6
 
 
-				importer = MITHgrid.Data.Importer.CSV.initInstance that.dataStore, template
+				importer = MITHgrid.Data.Importer.CSV.initInstance that.dataStore.csv, template
 
-
-					
 				that.dataStore.csv.events.onModelChange.addListener ->
 					console.log "model updated"
 					# get the list of all math scores
@@ -87,14 +120,17 @@ MITHgrid.Application.namespace "gridDemo", (exp)->
 				window["test"] = that 
 
 				#create bindings 
-				binding = MITHgrid.Click.initInstance({}).bind("#defUpload")
-				binding.events.onSelect.addListener ->
+				MITHgrid.Click.initInstance({}).bind("#defUpload").events.onSelect.addListener ->
 					#Upload the default data.
 					#define callback.
 					cb = (data)->
 						#check for format
 						if data?
-							that.dataStore.csv.loadItems data.entries
+							that.dataStore.json.loadItems data.entries
+							$(".csvTable").hide()
+							$(".csvPlot").hide()
+							$(".jsonPlot").show()
+							$(".jsonTable").show()
 
 					#make ajax call.
 					$.ajax( 
@@ -109,6 +145,10 @@ MITHgrid.Application.namespace "gridDemo", (exp)->
 					cb = (data)->
 						#check for format
 						if data?
+							$(".csvTable").show()
+							$(".jsonTable").hide()
+							$(".csvPlot").show()
+							$(".jsonPlot").hide()
 							importer.import data, ->
 								console.log "success"
 
@@ -131,18 +171,27 @@ MITHgrid.defaults "MITHgrid.Application.gridDemo",
 	# 		is:"rw"
 
 	dataStores:
-		csv:
+		json:
 			types:
 				student:{}
 				record:{}
 			properties:
 				"name":
 					valueType:"item"
+		csv:
+			types:
+				president:{}
+			properties:
+				"year":
+					valueType:"number"
 
 	dataViews:
-		csvData:
-			dataStore : "csv"
+		jsonData:
+			dataStore : "json"
 			type: ["record","student"]
+		csvData:
+			dataStore: "csv"
+			type: ["president"]
 
 
 	# presentations:

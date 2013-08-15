@@ -8,6 +8,7 @@ module.exports = (grunt)->
 				files:
 					"src/app.js" : "src/app.coffee"
 					"src/drive.js":"src/drive.coffee"
+          # "src/spreadsheet.js":"src/spreadsheet.coffee"
 					"src/graph.js":"src/graph.coffee"
 					"src/importer.js":"src/importer.coffee"
 		concat:
@@ -21,8 +22,10 @@ module.exports = (grunt)->
         			'components/jquery/jquery.js',
         			'components/jquery-csv/src/jquery.csv.js'
         			'components/bootstrap/docs/assets/js/bootstrap.js',
+              'components/handsontable/dist/jquery.handsontable.full.js'
         			'../../dist/mithgrid.js',
         			'src/graph.js',
+              'src/spreadsheet.js',
         			'src/app.js',
         			'src/drive.js',
         			'src/importer.js'

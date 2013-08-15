@@ -1,5 +1,4 @@
 ## CSV Importer v0.1
-# @author: Selvam Palnimalai
 # @license : MIT
 
 MITHgrid.Data.namespace "Importer", (I)->
@@ -23,8 +22,8 @@ MITHgrid.Data.namespace "Importer", (I)->
 					id = null
 					item.type = template.type
 					#compare with template and build item
-					for key of template
-						value = template[key]
+					for key of template.columns
+						value = template.columns[key]
 						if s[value]?
 							if key is "id"
 								id = s[value]
