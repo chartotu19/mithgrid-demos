@@ -104,6 +104,9 @@ MITHgrid.Application.namespace "gridDemo", (exp)->
 
 				importer = MITHgrid.Data.Importer.CSV.initInstance that.dataStore.csv, template
 
+				exporter = MITHgrid.Data.Exporter.CSV.initInstance that.dataStore.csv, ()->
+
+
 				that.dataStore.csv.events.onModelChange.addListener ->
 					console.log "model updated"
 					# get the list of all math scores
@@ -119,8 +122,9 @@ MITHgrid.Application.namespace "gridDemo", (exp)->
 				#hook to play around in the console.	
 				window["test"] = that 
 
+				clickInstance = MITHgrid.Click.initInstance({})
 				#create bindings 
-				MITHgrid.Click.initInstance({}).bind("#defUpload").events.onSelect.addListener ->
+				clickInstance.bind("#defUpload").events.onSelect.addListener ->
 					#Upload the default data.
 					#define callback.
 					cb = (data)->
@@ -139,7 +143,7 @@ MITHgrid.Application.namespace "gridDemo", (exp)->
 						success:cb
 					)
 
-				MITHgrid.Click.initInstance({}).bind("#csvUpload").events.onSelect.addListener ->
+				clickInstance.bind("#csvUpload").events.onSelect.addListener ->
 					#Upload the default data.
 					#define callback.
 					cb = (data)->
@@ -159,8 +163,9 @@ MITHgrid.Application.namespace "gridDemo", (exp)->
 						success:cb
 					)
 
-				#define events
-
+				clickInstance.bind("#export").events.onSelect.addListener ->
+					console.log "export"
+					exporter.export " "
 
 
 

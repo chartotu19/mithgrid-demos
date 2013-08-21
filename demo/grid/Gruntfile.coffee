@@ -11,6 +11,7 @@ module.exports = (grunt)->
           # "src/spreadsheet.js":"src/spreadsheet.coffee"
 					"src/graph.js":"src/graph.coffee"
 					"src/importer.js":"src/importer.coffee"
+          #"src/exporter.js":"src/exporter.coffee"
 		concat:
 			options:
 				stripBanners : true
@@ -28,7 +29,10 @@ module.exports = (grunt)->
               'src/spreadsheet.js',
         			'src/app.js',
         			'src/drive.js',
-        			'src/importer.js'
+        			'src/importer.js',
+              'src/Blob.js'
+              'src/FileSaver.js',
+              'src/exporter.js'
         		]
         		dest: 'src/<%= pkg.name %>.js'
 
