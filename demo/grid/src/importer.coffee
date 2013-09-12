@@ -9,6 +9,8 @@ MITHgrid.Data.namespace "Importer", (I)->
 			ids = []
 
 			that.import = (csv,cb)->
+				cb = (ids)->
+					console.log ids
 				#logic to parse the csv
 				subjects = $.csv2Array csv, 
 					separator: template.separator
@@ -33,11 +35,15 @@ MITHgrid.Data.namespace "Importer", (I)->
 
 				syncer.done ->
 					setTimeout ->
+						_updateList = []
+						_loadList = []
 						for item in items
 							if dataStore.contains [item]
-								dataStore.updateItems [item]
+								_updateList.push item
 							else
-								dataStore.loadItems [item]
+								_loadList.push item
+						dataStore.updateItems _updateList if _updateList.length isnt 0
+						dataStore.loadItems _loadList if _loadList.length isnt 0
 						cb(ids) if cb? 
 					,0
 			that
