@@ -22,24 +22,28 @@ body{
 	border-right:1px solid;
 }
 
+
+/* 
+editTable Presentation
+*/
+.jsonTable > table > tbody > tr > td > input {
+  width: 100%;
+}
+
+
 /* Style for table body*/
 .jsonTable > table > tbody > tr > td, .csvTable > table > tbody > tr > td {
 	background-color: #cdf;
 	padding: 10px ;
 	border:1px solid #eee;
 }
-
 /* Style for table header*/
 .jsonTable > table > tbody > tr > th , .csvTable > table > tbody > tr > th{
 	padding: 10px;
 	border:1px solid #ccc;
-
 }
 
-
 /* D3 */
-
-
 .axis path,
 .axis line {
   fill: none;
@@ -48,4 +52,26 @@ body{
 }
 
 
+.x.axis path {
+  display: none;
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+/* Graph Presentation */
+.graph-controls > div{
+  float:left;
+}
+.graph-controls{
+  border-radius: 10px;
+  background-color: #eee;
+  padding:20px;
+}
+.jsonPlot{
+  background-color: #eeeff8;
+}
 
