@@ -4,7 +4,8 @@ MITHgrid.namespace "Click", (that)->
 	that.initInstance= (args...)->
 		MITHgrid.Controller.initInstance "MITHgrid.Click", args..., (that)->
 			that.applyBindings = (binding)->
-				binding.locate('').click binding.events.onSelect.fire
+				binding.locate('').click (e)->
+					binding.events.onSelect.fire e
 
 
 MITHgrid.Application.namespace "gridDemo", (exp)->
@@ -18,25 +19,86 @@ MITHgrid.Application.namespace "gridDemo", (exp)->
 			# sets up the app
 			that.ready ->
 				
-				#App initialised.
+				###Controller Initialization###
+				click = MITHgrid.Click.initInstance(
+						selectors:
+							"clicker":""
+				)
 
-				#Presentation initialization.
+				###Presentation Initialization###
+				#1) Tab Presentation
+				withTemplates = ['start','exportOptions']
+				d = []
+				p = []
+				for t in withTemplates
+					d[t] = new $.Deferred()
+					p[t] = d[t].promise()
+
+				MITHgrid.Presentation.Tabs.initInstance('.Tabs',
+					dataView:that.dataView.jsonData
+					nav:[
+						id:'start'
+						text:'Start/Import'
+					,
+						id:'data'
+						text:'Data'
+					,
+						id:'visualize'
+						text:'Visualize'
+					,
+						id:'exportOptions'
+						text:'Export'
+					]
+					divs:[
+						id:'start',
+						containers:[
+							class:'start'
+							template:true
+							promise:d['start']
+						]
+					,
+						id:'data'
+						containers:[
+							class:'jsonTable'
+							template:false
+						, 
+							class:'csvTable'
+							template:false
+						]
+					,
+						id:'visualize'
+						containers:[
+							class:'jsonPlot'
+							template:false
+						,
+							class:'csvPlot'
+							template:false
+						]
+					,
+						id:'exportOptions'
+						containers:[
+							class:'export'
+							template:true
+							promise:d['exportOptions']
+						]
+					]
+				)
+
 
 				# Table presentation to show the data from JSON.
-				MITHgrid.Presentation.Table.initInstance('.jsonTable',
-					columns: ["name","age","math","science"]
+				MITHgrid.Presentation.editTable.initInstance('.jsonTable',
+					columns: ["name","math","science","english"]
 					columnLabels:
 						name:"First Name"
-						age:"Age"
 						math:"Mathematics"
 						science:"Science"
+						english:"English"
 					dataView:that.dataView.jsonData
 				)
 
 				# hide it initially. Onclick show.
 				$(".jsonTable").hide()
 
-				
 				MITHgrid.Presentation.Spreadsheet.initInstance('.csvTable',
 					dataView:that.dataView.csvData
 					colHeaders: ["Name","Year","Popular Vote %","Popular vote Advantage",
@@ -101,18 +163,16 @@ MITHgrid.Application.namespace "gridDemo", (exp)->
 						"elec_vote_advantage" : 5
 						"difference" : 6
 
-
 				importer = MITHgrid.Data.Importer.CSV.initInstance that.dataStore.csv, template
 
-				exporter = MITHgrid.Data.Exporter.CSV.initInstance that.dataStore.csv, ()->
-
+				csvExporter = null
+				jsonExporter = null
 
 				that.dataStore.csv.events.onModelChange.addListener ->
 					console.log "model updated"
 					# get the list of all math scores
 					# avg = calculateAvg() 
 					# that.setAvg avg
-
 
 				# that.events.onAvgChange.addListener ->
 				# 	$(".plot").html(that.getAvg())
@@ -121,51 +181,62 @@ MITHgrid.Application.namespace "gridDemo", (exp)->
 				
 				#hook to play around in the console.	
 				window["test"] = that 
-
+				
 				clickInstance = MITHgrid.Click.initInstance({})
-				#create bindings 
-				clickInstance.bind("#defUpload").events.onSelect.addListener ->
-					#Upload the default data.
-					#define callback.
-					cb = (data)->
-						#check for format
-						if data?
-							that.dataStore.json.loadItems data.entries
-							$(".csvTable").hide()
-							$(".csvPlot").hide()
-							$(".jsonPlot").show()
-							$(".jsonTable").show()
 
-					#make ajax call.
-					$.ajax( 
-						url:"data/test.json"
-						type:"get"
-						success:cb
-					)
+				p['start'].done ->
+					$(".message").hide()
+					#create bindings 
+					clickInstance.bind("#defUpload").events.onSelect.addListener ->
+						#Upload the default data.
+						#define callback.
+						cb = (data)->
+							#check for format
+							if data?
+								that.dataStore.json.loadItems data.entries
+								jsonExporter = MITHgrid.Data.Exporter.JSON.initInstance that.dataStore.json, ()->
+								csvExporter = MITHgrid.Data.Exporter.CSV.initInstance that.dataStore.json, ()->
+								$(".csvTable").hide()
+								$(".csvPlot").hide()
+								$(".jsonPlot").show()
+								$(".jsonTable").show()
+								$(".message").show().delay('1000').fadeOut('normal')
 
-				clickInstance.bind("#csvUpload").events.onSelect.addListener ->
-					#Upload the default data.
-					#define callback.
-					cb = (data)->
-						#check for format
-						if data?
-							$(".csvTable").show()
-							$(".jsonTable").hide()
-							$(".csvPlot").show()
-							$(".jsonPlot").hide()
-							importer.import data, ->
-								console.log "success"
+						#make ajax call.
+						$.ajax( 
+							url:"data/test.json"
+							type:"get"
+							success:cb
+						)
 
-					#make ajax call.
-					$.ajax( 
-						url:"data/test.csv"
-						type:"get"
-						success:cb
-					)
+					clickInstance.bind("#csvUpload").events.onSelect.addListener ->
+						#Upload the default data.
+						#define callback.
+						cb = (data)->
+							#check for format
+							if data?
+								jsonExporter = MITHgrid.Data.Exporter.JSON.initInstance that.dataStore.csv, ()->
+								csvExporter = MITHgrid.Data.Exporter.CSV.initInstance that.dataStore.csv, ()->
+								$(".csvTable").show()
+								$(".jsonTable").hide()
+								$(".csvPlot").show()
+								$(".jsonPlot").hide()
+								$(".message").show().delay('1000').fadeOut('normal')
+								importer.import data, ->
+									console.log "success"
 
-				clickInstance.bind("#export").events.onSelect.addListener ->
-					console.log "export"
-					exporter.export " "
+						#make ajax call.
+						$.ajax( 
+							url:"data/test.csv"
+							type:"get"
+							success:cb
+						)
+
+				p['exportOptions'].done ->
+					clickInstance.bind("#csvExport").events.onSelect.addListener ->
+						csvExporter.export ","
+					clickInstance.bind("#jsonExport").events.onSelect.addListener ->
+						jsonExporter.export ->
 
 
 
@@ -229,7 +300,4 @@ MITHgrid.defaults "MITHgrid.Click",
 	bind:
 		events:
 			onSelect: null
-
-
-
 
