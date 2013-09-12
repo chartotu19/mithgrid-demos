@@ -1,40 +1,61 @@
 MITHgrid.Presentation.namespace "Graph" , (Graph)->
-
+  # ## Graph
+  #
+  # A graph presentation provides a graphical view of the data. 
+  # Currently supports scatter,multibar,line plots. 
+  #
+  # Options:
+  # 
+  # * defaultxAxis: Parameter on the x-axis. 
+  # * defaultyAxis: Parameter on the y-axis. (both have to be one of the properties of the dataView item)
+  # * plotType: [optional] type of graph/plot
+  #
+  # The list of variables are picked up from the dataStore (Excluding the name,id,type properties).
+  #
+  # **N.B.:** This presentation is a work in progress.
 	Graph.initInstance  = (args...)->
 	
 		MITHgrid.Presentation.initInstance "MITHgrid.Presentation.Graph", args..., (that,container)->
 
+			# Fetch options from the instantiation
 			options = that.options
-
 			model = that.dataView
+
+			# set plotType to default if none provided
+			options.plotType = options.plotType || that.getType()
+
+			# Keep updating this list as more plotTypes are supported
+			supportedTypes = ["scatter","line","multiBar"]
 
 			#Setting the default x-axis and y-axis values provided at initInstance 
 			that.setxAxis(options.defaultxAxis)
 			that.setyAxis(options.defaultyAxis)
 
 			#creating control panel
-			$(container).append("<div></div>")
+			dom = $(container).append("<div class=\"graph-controls\"></div>")
 			controls = $(container).find("div")
 			
 			#create svg
 			$(container).append("<svg></svg>")
 
-			# Not sure 
 			that.hasLensFor = -> true
 
-			# #listeners
+			# Listeners
+			# Onchange of any of the controls, replot the graph.
 			that.events.onxAxisChange.addListener ->
 				that.drawPlot()
-
 			that.events.onyAxisChange.addListener ->
+				that.drawPlot()
+			that.events.onTypeChange.addListener ->
 				that.drawPlot()
 
 			# creates the list of variables to be plotted
 			pickup = ->
+				#common properties in an item which needs to be ignored from variable list.
 				excludeList = ["id","type","name"]
 				includeList = []
 				ids = that.dataView.items()
-				#pick up the first id [Hack]
+				#pick up the first id to get the variable list [Hack]
 				if ids[0]?
 					res = that.dataView.getItem(ids[0])
 				if res?
@@ -60,18 +81,42 @@ MITHgrid.Presentation.namespace "Graph" , (Graph)->
 				i = 0
 				celx = $("<select class='x'></select>")
 				while i < options.x.length
-					$(celx).append("<option value='"+options.x[i]+"'>"+options.x[i]+"</option>")
+					if options.x[i] is options.defaultxAxis
+						selected = "selected"
+					else
+						selected = ""
+					$(celx).append("<option value='"+options.x[i]+"' "+selected+" >"+options.x[i]+"</option>")
 					i++
-				$(controls).append "<p>X-Axis :</p>"
-				$(controls).append celx
+				x_cont = $('<div class=\"x-container\"></div>')
+				x_cont.append '<span>X-Axis :</span>'
+				x_cont.append celx
+				$(controls).append x_cont
 
 				i = 0
 				cely = $("<select class='y'></select>")
 				while i < options.y.length
-					$(cely).append("<option value='"+options.y[i]+"'>"+options.y[i]+"</option>")
+					if options.y[i] is options.defaultyAxis
+						selected = "selected"
+					else
+						selected = ""
+					$(cely).append("<option value='"+options.y[i]+"' "+selected+">"+options.y[i]+"</option>")
 					i++
-				$(controls).append "<p>Y-Axis :</p>"
-				$(controls).append cely
+				y_cont = $('<div class=\"y-container\"></div>')
+				y_cont.append '<span>Y-Axis :</span>'
+				y_cont.append cely
+				$(controls).append y_cont
+
+				i = 0
+				type = $("<select class='plotType'></select>")
+				while i < supportedTypes.length
+					if supportedTypes[i] is options.plotType
+						selected = "selected"
+					else
+						selected = ""
+					$(type).append("<option value='"+supportedTypes[i]+"' "+selected+">"+supportedTypes[i]+"</option>")
+					i++
+				$(controls).append "<span>Plot Type :</span>"
+				$(controls).append type
 
 				celx.on "change", ->
 					that.setxAxis $(this).val()
@@ -79,13 +124,102 @@ MITHgrid.Presentation.namespace "Graph" , (Graph)->
 				cely.on "change", ->
 					that.setyAxis $(this).val()
 
-			updateSVG = (options)->
+				type.on "change", ->
+					that.setType $(this).val()
+
+			linePlot = (options)->
+				d3.select(container).select("svg").remove()
+				margin =
+				  top: 20
+				  right: 80
+				  bottom: 30
+				  left: 50
+
+				width = 960 - margin.left - margin.right
+				height = 500 - margin.top - margin.bottom
+				svg = d3.select(container).append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+
+				
+				d3.json "data/cumulativeLineData.json", (data) ->
+					nv.addGraph ->
+					  #adjusting, 100% is 1.00, not 100 as it is in the data
+					  chart = nv.models.cumulativeLineChart().x((d) ->
+					    d[0]
+					  ).y((d) ->
+					    d[1] / 100
+					  ).color(d3.scale.category10().range())
+					  chart.xAxis.tickFormat (d) ->
+					    d3.time.format("%x") new Date(d)
+
+					  chart.yAxis.tickFormat d3.format(",.1%")
+					  d3.select(container).select("svg").datum(data).transition().duration(500).call chart
+					  
+					  #TODO: Figure out a good way to do this automatically
+					  nv.utils.windowResize chart.update
+					  chart
+
+			multiBarPlot = ->
+				dom.find('.x-container').hide()
+				dom.find('.y-container').hide()
+				d3.select(container).select('svg').remove()
+				nv.addGraph ->
+				  chart = nv.models.multiBarChart()
+				  chart.xAxis.tickFormat d3.format(',f')
+				  chart.yAxis.tickFormat d3.format(',.1f')
+				  d3.select(container).append('svg').datum(data()).transition().duration(500).call chart
+				  nv.utils.windowResize chart.update
+				  chart
+
+				hash = ->
+					_list = []
+					_count = 0
+					get:(id)->
+						#check for id
+						if _list[id]?
+							_list[id]
+						else
+							_list[id] = _count + 1
+							_count++
+			
+				data = ->
+				  h = hash()
+				  result = []
+				  items = model.items()
+				  ref = model.getItem(model.items()[0])
+				  result = []
+				  i = 0
+				  _results = []
+				  while i < Object.keys(ref).length
+				    obj = {}
+				    obj.values = []
+				    obj.key = _key = Object.keys(ref)[i]
+				    # if key is not present in the includeList returned by pickup().
+				    # continue in the loop.
+				    if !(_key in pickup())
+				    	i++
+				    	continue
+				    j = 0
+				    while j < items.length
+				      _id = items[j]
+				      val = model.getItem(_id)
+				      temp = {}
+				      temp.y = val[_key] or 0
+				      temp.x = h.get(_id)
+				      obj.values.push temp  if ((if temp? then temp.y else undefined))?
+				      j++
+				    result.push(obj)
+				    i++
+				  result
+
+			scatterPlot = (options)->
+				dom.find('.x-container').show()
+				dom.find('.y-container').show()
 				#options is not used till now.
 				options ?= {}
 				xvar = that.getxAxis()
 				yvar =  that.getyAxis()
 				#clean the svg
-				d3.select(container).select("svg").remove()
+				d3.select(container).select('svg').remove()
 				#svg specs
 				margin =
 					top: 20
@@ -159,7 +293,13 @@ MITHgrid.Presentation.namespace "Graph" , (Graph)->
 
 
 			that.drawPlot = (options)->
-				updateSVG(options)
+				switch that.getType() 
+					when 'scatter'
+						scatterPlot options
+					when 'line'
+						linePlot options
+					when 'multiBar'
+						multiBarPlot options
 				# updateControls()
 
 			that.render=(container,model,id)->
@@ -169,11 +309,12 @@ MITHgrid.Presentation.namespace "Graph" , (Graph)->
 				that.drawPlot()
 
 				rendering.update = (item)->
-					console.log "render.update called"
+					console.log "graph update called"
+					updateControls()
+					that.drawPlot()
 
 				rendering.remove = ->
-					#$(container).remove()
-					that.drawPlot()
+					$(container).remove()
 
 				#return
 				rendering
@@ -186,5 +327,7 @@ MITHgrid.defaults "MITHgrid.Presentation.Graph",
 		yAxis:
 			"default":null
 			"is":"rw"
-
+		Type:
+			"default":"scatter"
+			"is":"rw"
 
