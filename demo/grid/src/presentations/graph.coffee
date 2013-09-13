@@ -52,7 +52,7 @@ MITHgrid.Presentation.namespace "Graph" , (Graph)->
 			# creates the list of variables to be plotted
 			pickup = ->
 				#common properties in an item which needs to be ignored from variable list.
-				excludeList = ["id","type","name"]
+				excludeList = ["id","type","name","year"]
 				includeList = []
 				ids = that.dataView.items()
 				#pick up the first id to get the variable list [Hack]
@@ -203,7 +203,7 @@ MITHgrid.Presentation.namespace "Graph" , (Graph)->
 				      _id = items[j]
 				      val = model.getItem(_id)
 				      temp = {}
-				      temp.y = val[_key] or 0
+				      temp.y = parseInt(val[_key][0]) or 0
 				      temp.x = h.get(_id)
 				      obj.values.push temp  if ((if temp? then temp.y else undefined))?
 				      j++
@@ -242,9 +242,10 @@ MITHgrid.Presentation.namespace "Graph" , (Graph)->
 				data = []
 				while i < items.length
 					d = {}
-					d[xvar] = model.getItem(items[i])[xvar]
-					d[yvar]= model.getItem(items[i])[yvar]
+					d[xvar] = parseInt(model.getItem(items[i])[xvar][0])
+					d[yvar]= parseInt(model.getItem(items[i])[yvar][0])
 					d.name = model.getItem(items[i]).name || model.getItem(items[i]).id 
+					console.log d
 					data.push d
 					i++
 				x.domain(d3.extent(data, (d) ->
