@@ -14,6 +14,7 @@ module.exports = (grunt)->
           "src/presentations/editTable.js":"src/presentations/editTable.coffee"
           "src/importer.js":"src/importer.coffee"
           "src/exporter.js":"src/exporter.coffee"
+          "src/utils/utility.js":"src/utils/utility.coffee"
     concat:
       options:
         stripBanners : true
@@ -46,7 +47,8 @@ module.exports = (grunt)->
               'src/exporter.js',
               'src/importer.js',
               'src/libs/Blob.js',
-              'src/libs/FileSaver.js'
+              'src/libs/FileSaver.js',
+              'src/utils/utility.js'
               
             ]
             dest: 'src/<%= pkg.name %>.js'
