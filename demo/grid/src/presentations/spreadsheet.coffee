@@ -12,6 +12,10 @@ MITHgrid.Presentation.namespace "Spreadsheet", (spreadsheet)->
       options.columns
       model = that.dataView
 
+      map = MITHgrid.Utility.HashMap.initInstance(
+        type:'index'
+      )
+
       _buffer = []
       i = 0
 
@@ -30,7 +34,7 @@ MITHgrid.Presentation.namespace "Spreadsheet", (spreadsheet)->
       that.hasLensFor = -> true
 
       #create the spreadsheet
-      $(container).handsontable
+      ht = $(container).handsontable
         rowHeaders: true
         colHeaders: options.colHeaders
         columns:options.columns
@@ -43,10 +47,20 @@ MITHgrid.Presentation.namespace "Spreadsheet", (spreadsheet)->
       that.finishDisplayUpdate = ->
         console.log "loading"
         handsontable.loadData _buffer
-
+        handsontable.addHook "afterChange",(changes,source)->
+            #for single cell changes.
+            # Assuming that every row is from same item i.e. id.
+            obj = {}
+            try
+              obj.id = map.getKey changes[0][0]
+              obj[changes[0][1]] = changes[0][3]
+              model.updateItems [obj]
+            catch e
+              
       that.render = (container,model,id)->
         columns = {}
         rendering = {}
+        map.set id
         item = model.getItem id
         i++
         item = newItem item
@@ -55,7 +69,8 @@ MITHgrid.Presentation.namespace "Spreadsheet", (spreadsheet)->
         #handsontable.loadData _temp
 
         rendering.update = (item) ->
-          console.log "Spreadsheet update"      
+          console.log "Spreadsheet update"
+
         rendering.remove = ->
           console.log "Spreadsheet remove"
       
