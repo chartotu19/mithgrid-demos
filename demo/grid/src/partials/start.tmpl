@@ -1,9 +1,19 @@
-<h3> Simple exploratory analysis tool built using MITHgrid library.</h3>
-<ul class="list">
-  <li><button class="btn btn-success" id="csvUpload">Presidential Data</button></li>
-  <li><button class="btn btn-info" id="defUpload">Assignment Scores Data</button></li>
-</ul>
-<div class="message alert alert-success fade in">
-  <button type="button" class="close" data-dismiss="alert">×</button>
-  <strong>Success!</strong> Switch to Data or Visualize tabs to proceed.
+<div class="span12">
+  <div class="span5" style="border-right:3px solid #aaa">
+    <h3>Existing Datasets</h3>
+    <ul class="list">
+      <li><button class="btn btn-success" id="csvUpload">Presidential Data</button></li>
+      <li><button class="btn btn-info" id="defUpload">Assignment Scores Data</button></li>
+    </ul>
+  </div>
+  <div class="span5">
+    <h3>Drag and Drop Datasets</h3>
+    <div id="drop_zone">Drop files here</div>
+    <output id="list"></output>
+  </div>
+  <div class="span12 message alert alert-success fade in">
+    <button type="button" class="close" data-dismiss="alert">×</button>
+    <strong>Success!</strong> Switch to Data or Visualize tabs to proceed.
+  </div>
 </div>
+

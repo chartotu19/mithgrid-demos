@@ -9,6 +9,18 @@
 	  	<!--<link href='http://fonts.googleapis.com/css?family=Exo:100,400' rel='stylesheet' type='text/css'>-->
 	</head> 
 	<body>
+			<div class="curtains">
+				<div class="welcome-container">
+					<div>
+						<span><h2 class="font welcome-title">MITHgrid</h2></span>
+					</div>
+					<div>
+						<span class="font">JS framework for building data-oriented, event-driven browser apps &nbsp;</span>
+						<br> 
+						<div><button id="startApp" class="btn btn-primary btn-large">Launch</button></div>
+					</div>
+				</div>
+			</div>
 	    <div class="navbar navbar-inverse navbar-fixed-top">
 	      <div class="navbar-inner">
 	        <div class="container">
@@ -21,13 +33,14 @@
 	          <div class="nav-collapse collapse">
 	            <ul class="nav">
 	              <li class="active"><a href="#">Home</a></li>
+	              <li class="active"><a href="#">Demos</a></li>
 	              <li class="active"><a href="https://github.com/umd-mith/mithgrid">Github</a></li>
 	            </ul>
 	          </div><!--/.nav-collapse -->
 	        </div>
 	      </div>
 	    </div>
-	      <h1>Grid Demo</h1>
+	      <h1 class="hero-unit">Grid Demo - Simple exploratory analysis tool built using MITHgrid library.</h1>
 	     <div class="row-fluid">
 <!-- 		    <div class="container span3">
 
@@ -49,6 +62,12 @@
 		<!--<script src="https://apis.google.com/js/client.js" type="text/javascript"></script>-->
 		<script type="text/javascript">
 			$(document).ready(function() {
+				
+				$(".curtains button").on('click',function(){
+					$('.curtains').animate({
+						left:-2999},
+						1000);
+				});
 				//drive($,"#gdrive");
 				var app = MITHgrid.Application.gridDemo.initInstance("gridDemo",{});
 				app.run();

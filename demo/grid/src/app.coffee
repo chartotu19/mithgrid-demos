@@ -1,12 +1,7 @@
-
-# Defining Click controller
-MITHgrid.namespace "Click", (that)->
-	that.initInstance= (args...)->
-		MITHgrid.Controller.initInstance "MITHgrid.Click", args..., (that)->
-			that.applyBindings = (binding)->
-				binding.locate('').click (e)->
-					binding.events.onSelect.fire e
-
+###
+Data Visualization Demo using MITHgrid.
+@author: Selvam Palanimalai
+###
 
 MITHgrid.Application.namespace "gridDemo", (exp)->
 	#Setting up the gridDemo app
@@ -14,13 +9,11 @@ MITHgrid.Application.namespace "gridDemo", (exp)->
 		# args... will contain the container and config if provided
 		MITHgrid.Application.initInstance "MITHgrid.Application.gridDemo", args..., (that,container)->
 
-			# options comes from the MITHgrid.default[namespace]
-			#that.options = options
 			# sets up the app
 			that.ready ->
 				
 				###Controller Initialization###
-				click = MITHgrid.Click.initInstance(
+				clickInstance = MITHgrid.Click.initInstance(
 						selectors:
 							"clicker":""
 				)
@@ -85,7 +78,7 @@ MITHgrid.Application.namespace "gridDemo", (exp)->
 				)
 
 
-				# Table presentation to show the data from JSON.
+				#2) Table Presentation
 				MITHgrid.Presentation.editTable.initInstance('.jsonTable',
 					columns: ["name","math","science","english"]
 					columnLabels:
@@ -99,6 +92,7 @@ MITHgrid.Application.namespace "gridDemo", (exp)->
 				# hide it initially. Onclick show.
 				$(".jsonTable").hide()
 
+				#3) Spreadsheet Presentation
 				MITHgrid.Presentation.Spreadsheet.initInstance('.csvTable',
 					dataView:that.dataView.csvData
 					colHeaders: ["Name","Year","Popular Vote %","Popular vote Advantage",
@@ -120,12 +114,10 @@ MITHgrid.Application.namespace "gridDemo", (exp)->
 							data:"difference"
 					]
 				)
+				# hide it initially. Onclick show.
 				$(".csvTable").hide()
 				
-				# stats = MITHgrid.Presentation.SimpleText.initInstance('.stats',
-				# 	dataView:that.dataView.csvData
-				# )
-
+				#5) Graph Presentations
 				MITHgrid.Presentation.Graph.initInstance(".jsonPlot", 
 					dataView:that.dataView.jsonData
 					defaultxAxis:"math"
@@ -151,6 +143,7 @@ MITHgrid.Application.namespace "gridDemo", (exp)->
 				exp = that.dataStore.csv.prepare ["!userName"]
 				# Add listener to csv datastore update
 
+				#Template for parsing CSV. 
 				template = 
 					type: "president"
 					separator: "  "
@@ -170,24 +163,14 @@ MITHgrid.Application.namespace "gridDemo", (exp)->
 
 				that.dataStore.csv.events.onModelChange.addListener ->
 					console.log "model updated"
-					# get the list of all math scores
-					# avg = calculateAvg() 
-					# that.setAvg avg
 
-				# that.events.onAvgChange.addListener ->
-				# 	$(".plot").html(that.getAvg())
-				#Load some test data into the dataStore.
-				#The Table view should dynamically change.
-				
 				#hook to play around in the console.	
 				window["test"] = that 
 				
-				clickInstance = MITHgrid.Click.initInstance({})
-
 				p['start'].done ->
 					$(".message").hide()
 					#create bindings 
-					clickInstance.bind("#defUpload").events.onSelect.addListener ->
+					clickInstance.bind("#defUpload").events.onClick.addListener ->
 						#Upload the default data.
 						#define callback.
 						cb = (data)->
@@ -209,7 +192,7 @@ MITHgrid.Application.namespace "gridDemo", (exp)->
 							success:cb
 						)
 
-					clickInstance.bind("#csvUpload").events.onSelect.addListener ->
+					clickInstance.bind("#csvUpload").events.onClick.addListener ->
 						#Upload the default data.
 						#define callback.
 						cb = (data)->
@@ -233,10 +216,46 @@ MITHgrid.Application.namespace "gridDemo", (exp)->
 						)
 
 				p['exportOptions'].done ->
-					clickInstance.bind("#csvExport").events.onSelect.addListener ->
+					clickInstance.bind("#csvExport").events.onClick.addListener ->
 						csvExporter.export ","
-					clickInstance.bind("#jsonExport").events.onSelect.addListener ->
+					clickInstance.bind("#jsonExport").events.onClick.addListener ->
 						jsonExporter.export ->
+					handleFileSelect = (evt) ->
+						evt.stopPropagation()
+						evt.preventDefault()
+						files = evt.dataTransfer.files # FileList object.
+						# files is a FileList of File objects. List some properties.
+						output = []
+						i = 0
+
+						f = files[0]
+						output.push "<li><strong>", escape(f.name), "</strong> (", f.type or "n/a", ") - ", f.size, " bytes, last modified: ", (if f.lastModifiedDate then f.lastModifiedDate.toLocaleDateString() else "n/a"), "</li>"
+						reader = new FileReader()
+						reader.onloadend = (evt)->
+							if evt.target.readyState is 2
+								if evt.target.result? and JSON.parse?
+									op = JSON.parse evt.target.result
+									for o in op
+										o.type = 'item'
+									that.dataStore.csv.loadItems op
+									$(".csvTable").show()
+									$(".jsonTable").hide()
+									$(".csvPlot").show()
+									$(".jsonPlot").hide()
+									$(".message").show().delay('1000').fadeOut('normal')
+						
+						reader.readAsText(f)
+						document.getElementById("list").innerHTML = "<ul>" + output.join("") + "</ul>"
+					
+					handleDragOver = (evt) ->
+					  evt.stopPropagation()
+					  evt.preventDefault()
+					  evt.dataTransfer.dropEffect = "copy" # Explicitly show this is a copy.
+
+					# Setup the dnd listeners.
+					dropZone = document.getElementById("drop_zone")
+					dropZone.addEventListener "dragover", handleDragOver, false
+					dropZone.addEventListener "drop", handleFileSelect, false
 
 
 
@@ -293,11 +312,4 @@ MITHgrid.defaults "MITHgrid.Application.gridDemo",
 		# 	container:"#stats"
 		# 	dataView:"csvData"
 		# 	lensKey:["number"]
-
-
-
-MITHgrid.defaults "MITHgrid.Click",
-	bind:
-		events:
-			onSelect: null
 

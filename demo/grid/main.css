@@ -75,3 +75,40 @@ editTable Presentation
   background-color: #eeeff8;
 }
 
+.curtains{
+  z-index: 99999;
+  top:0px;
+  left:0px;
+  background-color: black;
+  position: fixed;
+  height: 100%;
+  width:100%;
+  text-align: center;
+}
+
+.font{
+  font-size: 20px;
+  color: white;
+  font-family: 'Lato', sans-serif;
+}
+
+div.welcome-container{
+    width:600px;
+    margin:120px auto;
+}
+      
+.welcome-title{
+  color:#1DC4F9;
+  font-size: 150px;
+  line-height: 150px;
+}
+
+#drop_zone{
+  padding: 20px;
+  border: 2px dashed #ccc;
+
+}
+
+.hero-unit{
+  padding: 30px;
+}
