@@ -1,0 +1,24 @@
+{
+  "name": "toDoApp",
+  "description": "A simple ToDo application using MITHgrid for todomvc.com",
+  "version": "0.1.0",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "coffee-script": "latest",
+    "bower": "latest",
+    "grunt": "~0.4.1",
+    "grunt-contrib-coffee": "~0.7.0",
+    "grunt-contrib-concat": "~0.3.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "license": [
+    {
+      "type": "BSD",
+      "url": "http://opensource.org/licenses/BSD-3-Clause"
+    }
+  ]
+}
